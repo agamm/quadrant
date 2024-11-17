@@ -27,6 +27,8 @@ type EditEvent =
 	| React.MouseEvent<HTMLDivElement>
 	| React.KeyboardEvent<HTMLDivElement>;
 
+const LOGO_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
+
 export default function CompanyGraph() {
 	const [companies, setCompanies] = useState<Company[]>([]);
 	const [newCompany, setNewCompany] = useState("");
@@ -462,7 +464,7 @@ export default function CompanyGraph() {
 								>
 									<Image
 										unoptimized
-										src={`https://img.logo.dev/${company.url}?token=${process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}`}
+										src={`https://img.logo.dev/${company.url}?token=${LOGO_TOKEN}`}
 										alt={`${company.name} logo`}
 										width={48}
 										height={48}

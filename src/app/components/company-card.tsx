@@ -21,6 +21,8 @@ interface CompanyCardProps {
 	onFinishEditing: () => void;
 }
 
+const LOGO_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
+
 export function CompanyCard({
 	company,
 	isPresentationMode,
@@ -49,7 +51,7 @@ export function CompanyCard({
 			<div className="relative w-16 h-16 mx-auto">
 				<Image
 					unoptimized
-					src={`https://img.logo.dev/${company.url}?token=pk_HChzxb4cRmeEdGeqAPKKAg`}
+					src={`https://img.logo.dev/${company.url}?token=${LOGO_TOKEN}`}
 					alt={`${company.name} logo`}
 					width={64}
 					height={64}
