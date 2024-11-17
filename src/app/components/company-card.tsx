@@ -11,7 +11,10 @@ interface CompanyCardProps {
 	onDelete: (id: string) => void;
 	onDragStart: (e: React.DragEvent, company: Company) => void;
 	onDragEnd: () => void;
-	onNameEdit: (e: EditEvent, id: string) => void;
+	onNameEdit: (
+		e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>,
+		id: string,
+	) => void;
 	editingCompanyId: string | null;
 	onNameChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 	onFinishEditing: () => void;

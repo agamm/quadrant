@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Plus, X, ChevronLeft, ChevronRight, Presentation } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Presentation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import dynamic from "next/dynamic";
 import { CompanyCard } from "./company-card";
 import { useReward } from "react-rewards";
+import Image from "next/image";
 
 type Company = {
 	id: string;
@@ -99,6 +99,7 @@ export default function CompanyGraph() {
 			return;
 		}
 		setDraggingCompany(company);
+		// @ts-expect-error - Image constructor is not fully typed in React DnD context
 		const img = new Image();
 		img.src =
 			"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -174,9 +175,6 @@ export default function CompanyGraph() {
 		if (isPresentationMode && !isConfettiAnimating) {
 			const rect = graphRef.current?.getBoundingClientRect();
 			if (rect) {
-				const x = (e.clientX - window.scrollX) / window.innerWidth;
-				const y = (e.clientY - window.scrollY) / window.innerHeight;
-
 				void triggerConfetti();
 
 				const rewardElement = document.getElementById("confettiReward");
@@ -316,9 +314,14 @@ export default function CompanyGraph() {
 						<div className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer">
 							<button
 								type="button"
-								onClick={(e) => startEditing(e, "left")}
-								onKeyDown={(e) =>
-									handleKeyDown(e, () => startEditing(e, "left"))
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+									startEditing(e as unknown as EditEvent, "left")
+								}
+								onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+									handleKeyDown(
+										e as unknown as React.KeyboardEvent<HTMLDivElement>,
+										() => startEditing(e as unknown as EditEvent, "left"),
+									)
 								}
 								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
@@ -339,9 +342,14 @@ export default function CompanyGraph() {
 						<div className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer">
 							<button
 								type="button"
-								onClick={(e) => startEditing(e, "right")}
-								onKeyDown={(e) =>
-									handleKeyDown(e, () => startEditing(e, "right"))
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+									startEditing(e as unknown as EditEvent, "right")
+								}
+								onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+									handleKeyDown(
+										e as unknown as React.KeyboardEvent<HTMLDivElement>,
+										() => startEditing(e as unknown as EditEvent, "right"),
+									)
 								}
 								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
@@ -365,9 +373,14 @@ export default function CompanyGraph() {
 						<div className="absolute top-4 left-1/2 -translate-x-1/2 cursor-pointer">
 							<button
 								type="button"
-								onClick={(e) => startEditing(e, "top")}
-								onKeyDown={(e) =>
-									handleKeyDown(e, () => startEditing(e, "top"))
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+									startEditing(e as unknown as EditEvent, "top")
+								}
+								onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+									handleKeyDown(
+										e as unknown as React.KeyboardEvent<HTMLDivElement>,
+										() => startEditing(e as unknown as EditEvent, "top"),
+									)
 								}
 								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
@@ -388,9 +401,14 @@ export default function CompanyGraph() {
 						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 cursor-pointer">
 							<button
 								type="button"
-								onClick={(e) => startEditing(e, "bottom")}
-								onKeyDown={(e) =>
-									handleKeyDown(e, () => startEditing(e, "bottom"))
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+									startEditing(e as unknown as EditEvent, "bottom")
+								}
+								onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+									handleKeyDown(
+										e as unknown as React.KeyboardEvent<HTMLDivElement>,
+										() => startEditing(e as unknown as EditEvent, "bottom"),
+									)
 								}
 								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
@@ -442,10 +460,12 @@ export default function CompanyGraph() {
 											: ""
 									} rounded-md shadow-lg transition-all duration-500`}
 								>
-									<img
+									<Image
 										src={`https://img.logo.dev/${company.url}?token=${process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}`}
 										alt={`${company.name} logo`}
-										className={`w-full h-full object-contain rounded-md ${
+										width={48}
+										height={48}
+										className={`object-contain rounded-md ${
 											isPresentationMode && !company.isRevealed
 												? "opacity-0"
 												: "opacity-100"
@@ -455,13 +475,12 @@ export default function CompanyGraph() {
 								{(!isPresentationMode || company.isRevealed) && (
 									<div
 										className="mt-2 text-sm text-center text-gray-300 cursor-text bg-gray-800 px-2 py-1 rounded"
-										onClick={(e) => startEditingCompany(e, company.id)}
+										onClick={(e) =>
+											startEditingCompany(e as EditEvent, company.id)
+										}
 										onKeyDown={(e) =>
 											handleKeyDown(e, () =>
-												startEditingCompany(
-													e as unknown as React.MouseEvent,
-													company.id,
-												),
+												startEditingCompany(e as EditEvent, company.id),
 											)
 										}
 										role="button"

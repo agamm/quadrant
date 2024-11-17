@@ -7,7 +7,12 @@ interface AxisLabelProps {
 	id: string;
 	text: string;
 	isEditing: boolean;
-	onEdit: (e: EditEvent, id: string) => void;
+	onEdit: (
+		e:
+			| React.MouseEvent<HTMLButtonElement>
+			| React.KeyboardEvent<HTMLButtonElement>,
+		id: string,
+	) => void;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 	onFinishEditing: () => void;
 	className?: string;
