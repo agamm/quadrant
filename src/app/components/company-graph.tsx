@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
 
 import { useState, useRef, useEffect } from "react";
 import { Plus, ChevronLeft, ChevronRight, Presentation } from "lucide-react";
@@ -462,6 +461,7 @@ export default function CompanyGraph() {
 									} rounded-md shadow-lg transition-all duration-500`}
 								>
 									<Image
+										unoptimized
 										src={`https://img.logo.dev/${company.url}?token=${process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}`}
 										alt={`${company.name} logo`}
 										width={48}

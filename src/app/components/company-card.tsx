@@ -4,6 +4,7 @@ import type { Company } from "@/types/company";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 interface CompanyCardProps {
 	company: Company;
@@ -46,9 +47,12 @@ export function CompanyCard({
 			onDragEnd={onDragEnd}
 		>
 			<div className="relative w-16 h-16 mx-auto">
-				<img
+				<Image
+					unoptimized
 					src={`https://img.logo.dev/${company.url}?token=pk_HChzxb4cRmeEdGeqAPKKAg`}
 					alt={`${company.name} logo`}
+					width={64}
+					height={64}
 					className="w-full h-full object-contain bg-gray-800 rounded-md"
 				/>
 				<Button
