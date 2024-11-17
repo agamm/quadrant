@@ -11,7 +11,7 @@ interface CompanyCardProps {
 	onDelete: (id: string) => void;
 	onDragStart: (e: React.DragEvent, company: Company) => void;
 	onDragEnd: () => void;
-	onNameEdit: (e: React.MouseEvent | React.KeyboardEvent, id: string) => void;
+	onNameEdit: (e: EditEvent, id: string) => void;
 	editingCompanyId: string | null;
 	onNameChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 	onFinishEditing: () => void;
@@ -28,8 +28,9 @@ export function CompanyCard({
 	onNameChange,
 	onFinishEditing,
 }: CompanyCardProps) {
-	const handleKeyDown = (e: React.KeyboardEvent) => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
 			onNameEdit(e, company.id);
 		}
 	};

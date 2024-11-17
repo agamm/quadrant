@@ -23,6 +23,10 @@ type AxisLabel = {
 	text: string;
 };
 
+type EditEvent =
+	| React.MouseEvent<HTMLDivElement>
+	| React.KeyboardEvent<HTMLDivElement>;
+
 export default function CompanyGraph() {
 	const [companies, setCompanies] = useState<Company[]>([]);
 	const [newCompany, setNewCompany] = useState("");
@@ -119,12 +123,12 @@ export default function CompanyGraph() {
 		setDraggingCompany(null);
 	};
 
-	const startEditing = (e: React.MouseEvent, id: string) => {
+	const startEditing = (e: EditEvent, id: string) => {
 		e.stopPropagation();
 		setEditingLabel(id);
 	};
 
-	const startEditingCompany = (e: React.MouseEvent, id: string) => {
+	const startEditingCompany = (e: EditEvent, id: string) => {
 		if (isPresentationMode) return;
 		e.stopPropagation();
 		setEditingCompanyId(id);
@@ -206,6 +210,16 @@ export default function CompanyGraph() {
 			editInputRef.current.focus();
 		}
 	}, [editingLabel]);
+
+	const handleKeyDown = (
+		e: React.KeyboardEvent<HTMLDivElement>,
+		action: () => void,
+	) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			action();
+		}
+	};
 
 	return (
 		<div className="flex h-screen bg-gray-900 text-white">
@@ -300,9 +314,13 @@ export default function CompanyGraph() {
 						{/* Horizontal axis */}
 						<div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-600" />
 						<div className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer">
-							<div
+							<button
+								type="button"
 								onClick={(e) => startEditing(e, "left")}
-								className="text-gray-300 text-base font-semibold"
+								onKeyDown={(e) =>
+									handleKeyDown(e, () => startEditing(e, "left"))
+								}
+								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
 								{editingLabel === "left" ? (
 									<input
@@ -316,12 +334,16 @@ export default function CompanyGraph() {
 								) : (
 									axisLabels.find((l) => l.id === "left")?.text
 								)}
-							</div>
+							</button>
 						</div>
 						<div className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer">
-							<div
+							<button
+								type="button"
 								onClick={(e) => startEditing(e, "right")}
-								className="text-gray-300 text-base font-semibold"
+								onKeyDown={(e) =>
+									handleKeyDown(e, () => startEditing(e, "right"))
+								}
+								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
 								{editingLabel === "right" ? (
 									<input
@@ -335,15 +357,19 @@ export default function CompanyGraph() {
 								) : (
 									axisLabels.find((l) => l.id === "right")?.text
 								)}
-							</div>
+							</button>
 						</div>
 
 						{/* Vertical axis */}
 						<div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-gray-600" />
 						<div className="absolute top-4 left-1/2 -translate-x-1/2 cursor-pointer">
-							<div
+							<button
+								type="button"
 								onClick={(e) => startEditing(e, "top")}
-								className="text-gray-300 text-base font-semibold"
+								onKeyDown={(e) =>
+									handleKeyDown(e, () => startEditing(e, "top"))
+								}
+								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
 								{editingLabel === "top" ? (
 									<input
@@ -357,12 +383,16 @@ export default function CompanyGraph() {
 								) : (
 									axisLabels.find((l) => l.id === "top")?.text
 								)}
-							</div>
+							</button>
 						</div>
 						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 cursor-pointer">
-							<div
+							<button
+								type="button"
 								onClick={(e) => startEditing(e, "bottom")}
-								className="text-gray-300 text-base font-semibold"
+								onKeyDown={(e) =>
+									handleKeyDown(e, () => startEditing(e, "bottom"))
+								}
+								className="text-gray-300 text-base font-semibold bg-transparent border-none w-full text-left"
 							>
 								{editingLabel === "bottom" ? (
 									<input
@@ -376,7 +406,7 @@ export default function CompanyGraph() {
 								) : (
 									axisLabels.find((l) => l.id === "bottom")?.text
 								)}
-							</div>
+							</button>
 						</div>
 					</div>
 
@@ -396,6 +426,13 @@ export default function CompanyGraph() {
 							onDragStart={(e) => onDragStart(e, company)}
 							onDragEnd={onDragEnd}
 							onClick={(e) => revealCompany(company.id, e)}
+							onKeyDown={(e) =>
+								handleKeyDown(e, () =>
+									revealCompany(company.id, e as unknown as React.MouseEvent),
+								)
+							}
+							role="button"
+							tabIndex={0}
 						>
 							<div className="flex flex-col items-center">
 								<div
@@ -419,6 +456,16 @@ export default function CompanyGraph() {
 									<div
 										className="mt-2 text-sm text-center text-gray-300 cursor-text bg-gray-800 px-2 py-1 rounded"
 										onClick={(e) => startEditingCompany(e, company.id)}
+										onKeyDown={(e) =>
+											handleKeyDown(e, () =>
+												startEditingCompany(
+													e as unknown as React.MouseEvent,
+													company.id,
+												),
+											)
+										}
+										role="button"
+										tabIndex={0}
 									>
 										{editingCompanyId === company.id ? (
 											<input

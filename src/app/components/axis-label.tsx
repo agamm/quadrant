@@ -7,7 +7,7 @@ interface AxisLabelProps {
 	id: string;
 	text: string;
 	isEditing: boolean;
-	onEdit: (e: React.MouseEvent | React.KeyboardEvent, id: string) => void;
+	onEdit: (e: EditEvent, id: string) => void;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 	onFinishEditing: () => void;
 	className?: string;
@@ -24,19 +24,17 @@ export function AxisLabel({
 }: AxisLabelProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter" || e.key === " ") {
-			onEdit(e, id);
-		}
-	};
-
 	return (
-		<div
-			role="button"
-			tabIndex={0}
-			className={`text-gray-300 text-base font-semibold ${className}`}
+		<button
+			type="button"
+			className={`text-gray-300 text-base font-semibold ${className} bg-transparent border-none w-full text-left`}
 			onClick={(e) => onEdit(e, id)}
-			onKeyDown={handleKeyDown}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					onEdit(e, id);
+				}
+			}}
 		>
 			{isEditing ? (
 				<Input
@@ -51,6 +49,6 @@ export function AxisLabel({
 			) : (
 				text
 			)}
-		</div>
+		</button>
 	);
 }
